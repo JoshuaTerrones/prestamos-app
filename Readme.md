@@ -44,8 +44,6 @@ Ideal para quienes prestan dinero a familiares o amigos y necesitan una forma si
 
 ## 📸 Capturas de pantalla
 
-> 📌 Las capturas se agregarán en la carpeta `screenshots/` con los nombres `home.png`, `detalle.png` y `meses.png`.
-
 | Home | Detalle | ¿Qué meses pagó? |
 |------|---------|-------------------|
 | `screenshots/home.png` | `screenshots/detalle.png` | `screenshots/meses.png` |
@@ -107,33 +105,6 @@ prestamos-app/
 - JDK 11 o superior.
 - Dispositivo o emulador con Android 8.0 (API 26) o superior.
 
-### Clonar y compilar
-
-```bash
-git clone https://github.com/JoshuaTerrones/prestamos-app.git
-cd prestamos-app
-./gradlew assembleDebug
-```
-
-El APK de depuración se generará en `app/build/outputs/apk/debug/app-debug.apk`.
-
-### Generar APK de release
-
-```bash
-./gradlew assembleRelease
-```
-
-El APK firmado se generará en `app/build/outputs/apk/release/app-release.apk`. Actualmente usa la configuración de firma de depuración; para producción, configura un keystore propio.
-
-### Ejecutar pruebas
-
-```bash
-./gradlew test           # Pruebas unitarias
-./gradlew connectedAndroidTest  # Pruebas instrumentadas (requiere dispositivo)
-```
-
----
-
 ## 📱 Uso de la aplicación
 
 1. **Agregar persona**: toca el botón flotante **"Agregar"**, completa nombre, monto del préstamo, pago mensual y fecha de inicio.
@@ -166,18 +137,6 @@ Para probar la app sin usar datos reales, puedes agregar personas ficticias como
 - **Fecha de inicio**: hace 3 meses
 
 Así verás meses vencidos, un mes próximo y podrás simular pagos.
-
----
-
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas. Si deseas mejorar algo:
-
-1. Haz un fork del repositorio.
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`).
-3. Realiza tus cambios y haz commit (`git commit -m 'Agrega nueva funcionalidad'`).
-4. Haz push a tu rama (`git push origin feature/nueva-funcionalidad`).
-5. Abre un Pull Request.
 
 ---
 
