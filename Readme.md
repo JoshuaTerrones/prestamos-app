@@ -5,152 +5,247 @@
 <h1 align="center">Prestamos App</h1>
 
 <p align="center">
-  <strong>Gestiona préstamos personales, registra pagos y recibe recordatorios automáticos.</strong>
+  Aplicación Android para gestionar préstamos personales, registrar pagos y recibir avisos de cobro.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Android-26%2B-green?logo=android&logoColor=white" alt="Android 26+">
-  <img src="https://img.shields.io/badge/Kotlin-1.9%2B-purple?logo=kotlin&logoColor=white" alt="Kotlin">
-  <img src="https://img.shields.io/badge/Jetpack%20Compose-Material%203-blue?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose">
-  <img src="https://img.shields.io/badge/Room-Database-orange?logo=room&logoColor=white" alt="Room">
-  <img src="https://img.shields.io/badge/WorkManager-Notificaciones-brightgreen?logo=android&logoColor=white" alt="WorkManager">
-  <img src="https://img.shields.io/badge/License-MIT-lightgrey" alt="License MIT">
+  <img src="https://img.shields.io/badge/Android-8.0%20(API%2026)%2B-3DDC84?logo=android&logoColor=white" alt="Android 8+">
+  <img src="https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin">
+  <img src="https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose">
+  <img src="https://img.shields.io/badge/Room-2.8.4-orange" alt="Room">
+  <img src="https://img.shields.io/badge/WorkManager-2.10.0-brightgreen" alt="WorkManager">
+  <img src="https://img.shields.io/badge/Licencia-MIT-lightgrey" alt="MIT">
 </p>
 
 ---
 
-## 📋 Descripción
+## Tabla de contenido
 
-**Prestamos App** es una aplicación Android nativa diseñada para llevar el control de préstamos de dinero entre personas. Permite registrar a quién le prestaste, el monto total, la cuota mensual y la fecha de inicio. A partir de ahí, la app calcula automáticamente los meses vencidos, los pagos adelantados y el saldo pendiente, y te envía notificaciones el día de cobro y cuando un pago está atrasado.
-
-Ideal para quienes prestan dinero a familiares o amigos y necesitan una forma simple y clara de recordar quién debe, cuánto y desde cuándo.
-
----
-
-## ✨ Características
-
-- **Registro de personas**: agrega nombre, monto del préstamo, pago mensual y fecha de inicio.
-- **Cálculo automático de meses**: genera la lista de meses a cobrar desde la fecha de inicio.
-- **Historial de pagos**: marca los meses que la persona ya pagó y visualiza el detalle de cada uno.
-- **Estado visual**: etiquetas de "Al día", "Debe X meses" o "Préstamo cancelado" con colores distintivos.
-- **Notificaciones automáticas**:
-  - Recordatorio el día exacto de cobro.
-  - Aviso 3 días después si el pago no se registró.
-- **Cancelación de préstamo**: cierra la cuenta cuando la persona devuelve todo.
-- **Interfaz moderna**: construida con Jetpack Compose y Material 3, con tema claro en tonos morados.
-- **Persistencia local**: los datos se guardan en Room (SQLite) en el dispositivo.
+- [Descripción](#descripción)
+- [Características](#características)
+- [Stack técnico](#stack-técnico)
+- [Arquitectura y flujo](#arquitectura-y-flujo)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Requisitos](#requisitos)
+- [Configuración y ejecución](#configuración-y-ejecución)
+- [Uso de la app](#uso-de-la-app)
+- [Notificaciones](#notificaciones)
+- [Build y release](#build-y-release)
+- [Datos de prueba](#datos-de-prueba)
+- [Roadmap sugerido](#roadmap-sugerido)
+- [Licencia](#licencia)
+- [Autor](#autor)
 
 ---
 
-## 📸 Capturas de pantalla
+## Descripción
 
-| Home | Detalle | ¿Qué meses pagó? |
-|------|---------|-------------------|
-| `screenshots/home.png` | `screenshots/detalle.png` | `screenshots/meses.png` |
+**Prestamos App** ayuda a llevar control de préstamos entre personas de manera simple y visual.
+
+Permite:
+- registrar monto prestado y cuota mensual,
+- calcular meses vencidos y próximos cobros según fecha de inicio,
+- guardar pagos por mes,
+- marcar préstamos como cancelados,
+- recibir recordatorios automáticos de cobro y atraso.
+
+Toda la información se guarda localmente en el dispositivo mediante Room (SQLite).
 
 ---
 
-## 🛠️ Tecnologías utilizadas
+## Características
+
+- Alta, edición y eliminación de personas con préstamo.
+- Historial de meses con estado de pago.
+- Registro de uno o varios meses en un solo pago.
+- Eliminación de pagos registrados por error.
+- Estado resumido por persona:
+  - **Al día**
+  - **Debe X meses**
+  - **Préstamo cancelado**
+- Resumen global en home:
+  - total cobrado,
+  - monto atrasado acumulado.
+- Recordatorios diarios con WorkManager:
+  - aviso cuando toca cobrar,
+  - aviso cuando ya pasaron 3 días sin pago.
+
+---
+
+## Stack técnico
 
 | Tecnología | Uso |
-|------------|-----|
-| **Kotlin** | Lenguaje principal |
-| **Jetpack Compose** | UI declarativa |
-| **Material 3** | Componentes de diseño |
-| **Room** | Base de datos local (SQLite) |
-| **WorkManager** | Tareas periódicas para notificaciones |
-| **Coroutines & Flow** | Asincronía y streams de datos |
-| **ViewModel** | Gestión de estado y lógica de UI |
-| **Navigation Compose** | Navegación entre pantallas |
-| **Java Time API** | Manejo de fechas y meses |
+|---|---|
+| Kotlin | Lenguaje principal |
+| Jetpack Compose | UI declarativa |
+| Material 3 | Componentes y estilos |
+| AndroidX ViewModel + Flow | Estado de UI y reactividad |
+| Room | Persistencia local en SQLite |
+| KSP | Procesamiento de anotaciones para Room |
+| WorkManager | Programación de notificaciones |
+| Java Time API | Cálculos de fecha y meses |
 
 ---
 
-## 📁 Estructura del proyecto
+## Arquitectura y flujo
+
+- **UI (Compose):** `HomeScreen`, `DetalleScreen`, `FormularioPersona`, `MarcarPagosSheet`.
+- **Estado y acciones:** `HomeViewModel`.
+- **Dominio/UI model:** `PersonaUi`, `MesUi` y función `construirUi`.
+- **Datos:** `PrestamoDao` + entidades `Persona` y `Pago`.
+- **Persistencia:** `AppDb` (Room).
+- **Recordatorios:** `Avisos` + `AvisosWorker` (WorkManager periódico diario).
+
+Flujo general:
+1. La app carga personas y pagos desde Room.
+2. El ViewModel construye el estado de cada préstamo.
+3. La UI presenta el resumen y permite registrar/quitar pagos.
+4. WorkManager ejecuta una revisión diaria para enviar notificaciones.
+
+---
+
+## Estructura del proyecto
 
 ```text
 prestamos-app/
 ├── app/
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/josh/prestamos/
-│   │   │   │   ├── MainActivity.kt          # Actividad principal y navegación
-│   │   │   │   ├── Entidades.kt             # Entidades Room, DAO y base de datos
-│   │   │   │   ├── Logica.kt                # Lógica de negocio (cálculo de meses)
-│   │   │   │   ├── HomeScreen.kt            # Pantalla principal (lista de personas)
-│   │   │   │   ├── HomeViewModel.kt         # ViewModel con estado de la UI
-│   │   │   │   ├── Avisos.kt                # Notificaciones y Worker
-│   │   │   │   ├── Componentes.kt           # Colores, formatos y componentes UI
-│   │   │   │   ├── Pantallas.kt             # Detalle, formulario y hoja de pagos
-│   │   │   │   └── ui/theme/                # Tema de Compose
-│   │   │   ├── res/                         # Recursos (strings, drawables, mipmaps)
-│   │   │   └── AndroidManifest.xml
-│   │   ├── androidTest/                     # Pruebas instrumentadas
-│   │   └── test/                            # Pruebas unitarias
-│   └── build.gradle.kts
-├── icons/                                   # Íconos de la app (PNG y SVG)
-├── gradle/
-├── build.gradle.kts
-├── gradle.properties
+│   ├── src/main/java/com/josh/prestamos/
+│   │   ├── MainActivity.kt      # Entrada principal y navegación de pantallas
+│   │   ├── HomeScreen.kt        # Pantalla principal y tarjetas de préstamos
+│   │   ├── Pantallas.kt         # Detalle, formulario y hoja de registro de pagos
+│   │   ├── HomeViewModel.kt     # Estado y operaciones de negocio
+│   │   ├── Logica.kt            # Cálculo de meses, deudas y totales
+│   │   ├── Entidades.kt         # Entidades Room, DAO y base de datos
+│   │   ├── Avisos.kt            # Canal, programación y worker de notificaciones
+│   │   ├── Componentes.kt       # Formatos, helpers y componentes visuales
+│   │   └── ui/theme/            # Tema de Compose
+│   ├── src/main/res/            # Recursos Android
+│   └── build.gradle.kts         # Configuración del módulo app
+├── .github/workflows/
+│   └── build-release.yml        # Pipeline de build/release de APK por tags
+├── icons/                       # Recursos gráficos del proyecto
+├── gradle/libs.versions.toml    # Versiones centralizadas
 └── Readme.md
 ```
 
 ---
 
-## 🚀 Instalación y uso
+## Requisitos
 
-### Requisitos previos
-
-- Android Studio Ladybug o superior.
-- JDK 11 o superior.
-- Dispositivo o emulador con Android 8.0 (API 26) o superior.
-
-## 📱 Uso de la aplicación
-
-1. **Agregar persona**: toca el botón flotante **"Agregar"**, completa nombre, monto del préstamo, pago mensual y fecha de inicio.
-2. **Ver detalles**: toca cualquier tarjeta para ver el historial de meses, el total cobrado y el próximo cobro.
-3. **Registrar pago**: en el detalle, toca **"Me pagó"**, selecciona los meses que pagó y confirma.
-4. **Quitar pago**: toca un mes ya pagado para eliminarlo del historial (volverá a aparecer como pendiente).
-5. **Cancelar préstamo**: usa **"Devolvió el préstamo"** para cerrar la cuenta.
-6. **Notificaciones**: la app programa un recordatorio diario a las 9:00 AM para avisarte de cobros y pagos atrasados.
+- Android Studio reciente (con soporte para AGP 9+ y Kotlin 2.2+).
+- JDK 17 recomendado.
+- SDK Android con:
+  - `compileSdk = 37`
+  - `targetSdk = 37`
+  - `minSdk = 26`
 
 ---
 
-## 🔔 Notificaciones
+## Configuración y ejecución
 
-La app utiliza **WorkManager** para programar una tarea periódica diaria que:
+### 1) Clonar el repositorio
 
-- Detecta si hoy es el día de cobro de algún préstamo activo y muestra: *"Hoy toca cobrar: [Nombre] · [Monto]"*.
-- Detecta si un pago lleva 3 días de atraso y muestra: *"[Nombre] no ha pagado: Falta el pago de [Mes]"*.
+```bash
+git clone https://github.com/JoshuaTerrones/prestamos-app.git
+cd prestamos-app
+```
 
-Los permisos de notificación se solicitan automáticamente en Android 13+.
+### 2) Compilar en modo debug
+
+```bash
+./gradlew assembleDebug
+```
+
+### 3) Ejecutar pruebas
+
+```bash
+./gradlew test
+```
+
+### 4) Generar APK release
+
+```bash
+./gradlew assembleRelease
+```
+
+El APK se genera dentro de:
+`app/build/outputs/apk/release/`
 
 ---
 
-## 🧪 Datos de prueba
+## Uso de la app
 
-Para probar la app sin usar datos reales, puedes agregar personas ficticias como:
-
-- **Nombre**: Juan Pérez
-- **Préstamo**: S/ 500
-- **Pago mensual**: S/ 50
-- **Fecha de inicio**: hace 3 meses
-
-Así verás meses vencidos, un mes próximo y podrás simular pagos.
-
----
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+1. Toca **Agregar** para registrar una persona.
+2. Ingresa:
+   - nombre,
+   - monto del préstamo,
+   - pago mensual,
+   - fecha de inicio.
+3. Abre la tarjeta para ver detalle e historial.
+4. Toca **Me pagó** para marcar meses pagados.
+5. Si te equivocas, toca un mes pagado para quitar ese pago.
+6. Usa **Devolvió el préstamo** para cerrar el préstamo.
 
 ---
 
-## 👤 Autor
+## Notificaciones
 
-**Joshua Terrones**
+La app crea un canal de notificaciones llamado **Cobros** y programa una tarea diaria (aprox. 9:00 AM) que revisa préstamos activos:
 
-- GitHub: [@JoshuaTerrones](https://github.com/JoshuaTerrones)
+- **Hoy toca cobrar** cuando un mes vence hoy y no tiene pago.
+- **No ha pagado** cuando pasaron 3 días desde el cobro sin pago.
+
+En Android 13+ se solicita permiso `POST_NOTIFICATIONS`.
+
+---
+
+## Build y release
+
+Existe un workflow en `.github/workflows/build-release.yml` que:
+
+1. Compila `assembleRelease`.
+2. Renombra el APK con el tag (`prestamos-app-<tag>.apk`).
+3. Publica artifact de Actions.
+4. Crea GitHub Release automáticamente para tags `v*.*.*`.
+
+También puede ejecutarse manualmente con `workflow_dispatch`.
+
+---
+
+## Datos de prueba
+
+Puedes probar con estos datos iniciales:
+
+- Nombre: `Juan Pérez`
+- Préstamo: `500`
+- Pago al mes: `50`
+- Fecha de inicio: hace 3 meses
+
+Con eso verás meses vencidos y podrás simular pagos parciales o múltiples.
+
+---
+
+## Roadmap sugerido
+
+- Exportación/importación de respaldos.
+- Filtros y búsqueda por nombre/estado.
+- Monedas configurables.
+- Gráficas de cobro mensual.
+- Bloqueo biométrico opcional.
+
+---
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia **MIT**.  
+Consulta el archivo [`LICENSE`](LICENSE).
+
+---
+
+## Autor
+
+**Joshua Terrones**  
+GitHub: [@JoshuaTerrones](https://github.com/JoshuaTerrones)
 
 ---
 
